@@ -30,3 +30,5 @@ export async function searchCities(term) {
 export const getWeatherByCity = (/* cityURL */) => {
 //   seu código aqui
 };
+
+//
