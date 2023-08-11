@@ -26,9 +26,24 @@ export async function searchCities(term) {
     return [];
   }
 }
+//= ======================================================================
+export async function getWeatherByCity(cityURL) {
+  const apiKey = import.meta.env.VITE_TOKEN; // Obtém a chave de API do arquivo .env
+  const url = `http://api.weatherapi.com/v1/current.json?lang=pt&key=${apiKey}&q=${cityURL}`;
 
-export const getWeatherByCity = (/* cityURL */) => {
-//   seu código aqui
-};
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
 
-//
+    const weatherData = {
+      temp: data.current.temp_c,
+      condition: data.current.condition.text,
+      icon: data.current.condition.icon,
+    };
+
+    return weatherData;
+  } catch (error) {
+    console.error('Erro ao buscar o tempo atual:', error);
+    return null;
+  }
+}
