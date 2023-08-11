@@ -127,19 +127,22 @@ export async function handleSearch(event) {
 
     const ulElement = document.querySelector('#cities');
 
-    const fetchWeatherData = async (city) => {
-      const weatherData = await getWeatherByCity(city.url);
-      return weatherData || {};
-    };
+    const weatherPromises = cities.map((city) => getWeatherByCity(city.url));
+    const weatherDataList = await Promise.all(weatherPromises);
 
-    const weatherDataList = await Promise.all(cities.map(fetchWeatherData));
-
-    const appendCityElement = (weatherData) => {
-      const liElmt = createCityElement(weatherData);
-      ulElement.appendChild(liElmt);
-    };
-
-    weatherDataList.forEach(appendCityElement);
+    weatherDataList.forEach((weatherData, index) => {
+      if (weatherData) {
+        const cityElement = createCityElement({
+          name: cities[index].name,
+          country: cities[index].country,
+          temp: weatherData.temp,
+          condition: weatherData.condition,
+          icon: weatherData.icon,
+          url: cities[index].url,
+        });
+        ulElement.appendChild(cityElement);
+      }
+    });
   } catch (error) {
     alert(error.message);
   }
